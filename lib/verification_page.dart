@@ -4,23 +4,21 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AgentVerificationPage extends StatefulWidget {
-  const AgentVerificationPage({super.key});
+class FarmerVerificationPage extends StatefulWidget {
+  const FarmerVerificationPage({super.key});
 
   @override
-  State<AgentVerificationPage> createState() =>
-      _AgentVerificationPageState();
+  State<FarmerVerificationPage> createState() =>
+      _FarmerVerificationPageState();
 }
 
-class _AgentVerificationPageState extends State<AgentVerificationPage> {
+class _FarmerVerificationPageState extends State<FarmerVerificationPage> {
   final _formKey = GlobalKey<FormState>();
 
-  File? _selectedImage; // For Mobile
-  Uint8List? _webImage; // For Web
+  File? _selectedImage;        // For Mobile
+  Uint8List? _webImage;        // For Web
 
   final ImagePicker _picker = ImagePicker();
-
-  final TextEditingController licenseController = TextEditingController();
 
   final Color primaryColor = const Color(0xFF1B5E20);
   final Color accentColor = const Color(0xFFFF6F00);
@@ -135,7 +133,7 @@ class _AgentVerificationPageState extends State<AgentVerificationPage> {
               const SizedBox(height: 20),
 
               Text(
-                "Role: Agent",
+                "Role: Farmer",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -170,7 +168,7 @@ class _AgentVerificationPageState extends State<AgentVerificationPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      "Upload Agent Photo",
+                      "Upload Farmer Photo",
                       style: TextStyle(
                         fontSize: 16,
                         color: primaryColor,
@@ -178,49 +176,6 @@ class _AgentVerificationPageState extends State<AgentVerificationPage> {
                       ),
                     ),
                   ],
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              TextFormField(
-                controller: licenseController,
-                cursorColor: primaryColor,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "License number is required";
-                  }
-                  if (value.length < 5) {
-                    return "Enter valid license number";
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: "Agent License Number",
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  floatingLabelStyle: TextStyle(
-                    color: primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  prefixIcon: Icon(Icons.badge, color: primaryColor),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                  const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: Colors.grey,
-                      width: 1.2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: primaryColor,
-                      width: 2,
-                    ),
-                  ),
                 ),
               ),
 
