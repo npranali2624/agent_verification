@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AgentVerificationPage extends StatefulWidget {
@@ -13,7 +15,9 @@ class AgentVerificationPage extends StatefulWidget {
 class _AgentVerificationPageState extends State<AgentVerificationPage> {
   final _formKey = GlobalKey<FormState>();
 
-  File? _selectedImage;
+  File? _selectedImage; // For Mobile
+  Uint8List? _webImage; // For Web
+
   final ImagePicker _picker = ImagePicker();
 
   final TextEditingController licenseController = TextEditingController();
@@ -29,14 +33,34 @@ class _AgentVerificationPageState extends State<AgentVerificationPage> {
     );
 
     if (image != null) {
-      setState(() {
-        _selectedImage = File(image.path);
-      });
+      if (kIsWeb) {
+        final bytes = await image.readAsBytes();
+        setState(() {
+          _webImage = bytes;
+        });
+      } else {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
     }
   }
 
   void _validateAndSubmit() {
-    if (_selectedImage == null) {
+    if (!kIsWeb && _selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Please upload your photo",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (kIsWeb && _webImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.red,
@@ -128,10 +152,15 @@ class _AgentVerificationPageState extends State<AgentVerificationPage> {
                     CircleAvatar(
                       radius: 70,
                       backgroundColor: primaryColor.withOpacity(0.1),
-                      backgroundImage: _selectedImage != null
+                      backgroundImage: kIsWeb
+                          ? (_webImage != null
+                          ? MemoryImage(_webImage!)
+                          : null)
+                          : (_selectedImage != null
                           ? FileImage(_selectedImage!)
-                          : null,
-                      child: _selectedImage == null
+                          : null) as ImageProvider?,
+                      child: (kIsWeb && _webImage == null) ||
+                          (!kIsWeb && _selectedImage == null)
                           ? Icon(
                         Icons.camera_alt,
                         size: 40,
